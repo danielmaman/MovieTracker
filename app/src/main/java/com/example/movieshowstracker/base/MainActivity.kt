@@ -1,7 +1,8 @@
-package com.example.movieshowstracker
+package com.example.movieshowstracker.base
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.movieshowstracker.R
 
 class MainActivity : AppCompatActivity() {
 
