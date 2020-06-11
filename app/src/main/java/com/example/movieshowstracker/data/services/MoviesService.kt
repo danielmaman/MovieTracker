@@ -2,6 +2,7 @@ package com.example.movieshowstracker.data.services
 
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
+import com.example.movieshowstracker.data.model.MovieList
 import com.example.movieshowstracker.data.model.PlotType
 import org.joda.time.Years
 import retrofit2.http.GET
@@ -31,5 +32,5 @@ interface MoviesService {
         @Query("type") type: CinematicType?,
         @Query("y") year: Years?,
         @Query("page") page: Int? = 1
-    ): List<Movie>
+    ): MovieList
 }

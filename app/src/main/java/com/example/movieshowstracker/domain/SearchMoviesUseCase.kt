@@ -2,6 +2,7 @@ package com.example.movieshowstracker.domain
 
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
+import com.example.movieshowstracker.data.model.MovieList
 import com.example.movieshowstracker.data.repo.MoviesRepository
 import org.joda.time.Years
 import org.koin.core.KoinComponent
@@ -13,10 +14,10 @@ class SearchMoviesUseCase: KoinComponent {
 
     suspend fun getMoviesBySearch(
         searchString: String,
-        type: CinematicType,
-        year: Years,
+        type: CinematicType? = null,
+        year: Years? = null,
         page: Int = 1
-    ): List<Movie> {
+    ): MovieList {
         for (x in 0 until 3){
             println(" Pre Data manipulation $x")
         }

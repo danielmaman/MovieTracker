@@ -2,6 +2,7 @@ package com.example.movieshowstracker.data.repo
 
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
+import com.example.movieshowstracker.data.model.MovieList
 import com.example.movieshowstracker.data.model.PlotType
 import com.example.movieshowstracker.data.services.MoviesService
 import org.joda.time.Years
@@ -35,7 +36,7 @@ class MoviesRepository : KoinComponent {
         type: CinematicType?,
         year: Years?,
         page: Int?
-    ): List<Movie> {
+    ): MovieList {
         return movieService.getMoviesBySearch(searchString, type, year, page)
     }
 

@@ -6,5 +6,5 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val ViewModelModule : Module = module {
-    viewModel { MoviesViewModel(get())}
+    viewModel { MoviesViewModel(get(), get())}
 }
