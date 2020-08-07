@@ -4,7 +4,6 @@ import com.example.movieshowstracker.BuildConfig.BASE_URL
 import com.example.movieshowstracker.constants.TIME_OUT
 import com.example.movieshowstracker.data.services.MoviesService
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -12,6 +11,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -46,8 +46,8 @@ val NetworkModule = module {
 
         Retrofit.Builder()
             .client(okHttpClient)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .baseUrl(BASE_URL).build()
     }
     factory{ get<Retrofit>().create(MoviesService::class.java) }

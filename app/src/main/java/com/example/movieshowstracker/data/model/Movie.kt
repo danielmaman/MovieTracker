@@ -3,6 +3,7 @@ package com.example.movieshowstracker.data.model
 import com.google.gson.annotations.SerializedName
 
 data class Movie(
+    @SerializedName("imdbID") val imdbID : String,
     @SerializedName("Title") val title : String,
     @SerializedName("Year") val year : Int,
     @SerializedName("Rated") val rated : String,
@@ -21,7 +22,6 @@ data class Movie(
     @SerializedName("Metascore") val metascore : String,
     @SerializedName("imdbRating") val imdbRating : Double,
     @SerializedName("imdbVotes") val imdbVotes : String,
-    @SerializedName("imdbID") val imdbID : String,
     @SerializedName("Type") val type : String,
     @SerializedName("DVD") val dVD : String,
     @SerializedName("BoxOffice") val boxOffice : String,

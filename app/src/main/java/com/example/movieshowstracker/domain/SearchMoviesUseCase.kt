@@ -1,45 +1,34 @@
 package com.example.movieshowstracker.domain
 
+import com.example.movieshowstracker.base.BaseUseCase
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
-import com.example.movieshowstracker.data.model.MovieList
 import com.example.movieshowstracker.data.repo.MoviesRepository
+import io.reactivex.Single
 import org.joda.time.Years
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class SearchMoviesUseCase: KoinComponent {
+class SearchMoviesUseCase : BaseUseCase<List<Movie>, SearchMoviesUseCase.Request>(), KoinComponent {
 
-    val moviesRepository : MoviesRepository by inject()
+    private val moviesRepository: MoviesRepository by inject()
 
-    suspend fun getMoviesBySearch(
-        searchString: String,
-        type: CinematicType? = null,
-        year: Years? = null,
-        page: Int = 1
-    ): MovieList {
-        for (x in 0 until 3){
-            println(" Pre Data manipulation $x")
-        }
-        val response =  moviesRepository.getMoviesBySearch(searchString, type, year, page)
-
-        for (x in 0 until 3){
-            println(" Post Data manipulation $x")
-        }
-
-        return response
+    override fun create(request: Request): Single<List<Movie>> {
+        return moviesRepository.fetchMoviesBySearch(
+            request.searchString,
+            request.type,
+            request.year,
+            request.page
+        )
+            .map {
+                it.movieList
+            }
     }
 
-//    suspend fun processLoginUseCase(query: String) : AllPeople {
-//        for (x in 0 until 3){
-//            println(" Pre Data manipulation $x")
-//        }
-//        val response =  mLoginRepo.getLoginData(query)
-//
-//        for (x in 0 until 3){
-//            println(" Post Data manipulation $x")
-//        }
-//
-//        return response
-//    }
+    data class Request(
+        val searchString: String,
+        val type: CinematicType? = null,
+        val year: Years? = null,
+        val page: Int = 1
+    ) : BaseUseCase.Request()
 }
