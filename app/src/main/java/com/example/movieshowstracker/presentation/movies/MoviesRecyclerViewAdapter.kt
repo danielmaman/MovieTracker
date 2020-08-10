@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.movieshowstracker.R
 import com.example.movieshowstracker.data.model.Movie
 
-class MoviesRecyclerViewAdapter(val context: Context, var moviesList: MutableList<Movie>) :
+class MoviesRecyclerViewAdapter(private val context: Context, private var moviesList: MutableList<Movie>) :
     RecyclerView.Adapter<MoviesRecyclerViewAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {

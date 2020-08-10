@@ -5,12 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
-
 import com.example.movieshowstracker.R
 import com.example.movieshowstracker.base.BaseFragment
-import com.example.movieshowstracker.base.LiveDataWrapper
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
 import kotlinx.android.synthetic.main.fragment_movies.*
@@ -18,8 +15,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : BaseFragment() {
 
-    val moviesViewModel : MoviesViewModel by viewModel()
-//TODO databinding
+    private val moviesViewModel: MoviesViewModel by viewModel()
+
+    //TODO databinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,12 +34,20 @@ class MoviesFragment : BaseFragment() {
         }
     }
 
-    private fun fetchMovieList(){
-        moviesViewModel.fetchMovieList("shutter", CinematicType.MOVIE).observe(viewLifecycleOwner, mDataObserver)
+    private fun fetchMovieList() {
+        moviesViewModel.fetchMovieList("batman", CinematicType.MOVIE)
+            .observe(viewLifecycleOwner, Observer {
+                loadRecyclerView(it)
+            })
     }
 
-    private val mDataObserver = Observer<List<Movie>> { result ->
-        moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), result?.toMutableList() ?: mutableListOf())
-        moviesRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+    private fun loadRecyclerView(movieList: List<Movie>) {
+        moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), movieList.toMutableList())
+        moviesRecyclerView.layoutManager = GridLayoutManager(
+            requireContext(),
+            2,//TODO remove hardcode
+            GridLayoutManager.VERTICAL,
+            false
+        )
     }
 }
