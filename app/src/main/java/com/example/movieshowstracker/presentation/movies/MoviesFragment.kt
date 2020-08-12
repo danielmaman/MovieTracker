@@ -1,9 +1,10 @@
 package com.example.movieshowstracker.presentation.movies
 
+import android.animation.LayoutTransition
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.LinearLayout
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.movieshowstracker.R
@@ -13,10 +14,15 @@ import com.example.movieshowstracker.data.model.Movie
 import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MoviesFragment : BaseFragment() {
 
     private val moviesViewModel: MoviesViewModel by viewModel()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
     //TODO databinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +40,26 @@ class MoviesFragment : BaseFragment() {
         }
     }
 
-    private fun fetchMovieList() {
-        moviesViewModel.fetchMovieList("batman", CinematicType.MOVIE)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.search_bar_menu, menu)
+        val searchView = menu.findItem(R.id.searchView).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (!newText.isNullOrEmpty()) {
+                    fetchMovieList(newText)
+                }
+                return true
+            }
+        })
+    }
+
+    private fun fetchMovieList(searchString: String = "batman") {//TODO remove hardcode
+        moviesViewModel.fetchMovieList(searchString, CinematicType.MOVIE)
             .observe(viewLifecycleOwner, Observer {
                 loadRecyclerView(it)
             })

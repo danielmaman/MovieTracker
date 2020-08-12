@@ -21,7 +21,7 @@ class SearchMoviesUseCase : BaseUseCase<List<Movie>, SearchMoviesUseCase.Request
             request.page
         )
             .map {
-                it.movieList
+                it.movieList ?: arrayListOf()
             }
     }
 
