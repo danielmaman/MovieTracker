@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movieshowstracker.R
 import com.example.movieshowstracker.data.model.Movie
 
-class MoviesRecyclerViewAdapter(private val context: Context, private var moviesList: MutableList<Movie>) :
+class MoviesRecyclerViewAdapter(private val context: Context, private var moviesList: MutableList<Movie>, private val callbacks: Callbacks) :
     RecyclerView.Adapter<MoviesRecyclerViewAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -36,6 +37,16 @@ class MoviesRecyclerViewAdapter(private val context: Context, private var movies
         holder.titleTextView.text = movie.title
         holder.yearTextView.text = movie.year.toString()
         holder.ratingTextView.text = movie.imdbRating.toString()
+        setToggleButton(holder.favoriteToggleButton, position)
+    }
+
+    private fun setToggleButton(
+        favoriteToggleButton: ToggleButton,
+        position: Int
+    ) {
+        favoriteToggleButton.setOnCheckedChangeListener { buttonView, isChecked ->
+            callbacks.favoriteButtonClicked(isChecked, moviesList[position])
+        }
     }
 
     class MovieViewHolder(item: View) : RecyclerView.ViewHolder(item) {
@@ -43,6 +54,11 @@ class MoviesRecyclerViewAdapter(private val context: Context, private var movies
         val titleTextView: TextView = item.findViewById(R.id.titleTextView)
         val ratingTextView: TextView = item.findViewById(R.id.ratingTextView)
         val yearTextView: TextView = item.findViewById(R.id.yearTextView)
+        val favoriteToggleButton: ToggleButton = item.findViewById(R.id.button_favorite)
     }//TODO move to binding
     //TODO fix image crop
+
+    interface Callbacks{
+        fun favoriteButtonClicked(isChecked: Boolean, movie: Movie)
+    }
 }

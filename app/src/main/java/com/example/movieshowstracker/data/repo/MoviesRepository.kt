@@ -4,15 +4,16 @@ import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
 import com.example.movieshowstracker.data.model.MovieList
 import com.example.movieshowstracker.data.model.PlotType
+import com.example.movieshowstracker.data.room.dao.MovieDao
 import com.example.movieshowstracker.data.services.MoviesService
+import io.reactivex.Completable
 import io.reactivex.Single
 import org.joda.time.Years
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class MoviesRepository : KoinComponent {//TODO implement through interface
+class MoviesRepository(private val movieService: MoviesService, private val movieDao: MovieDao) : KoinComponent {//TODO implement through interface
 
-    val movieService: MoviesService by inject()
 
     fun fetchMoviesByID(
         id: String,
@@ -42,4 +43,12 @@ class MoviesRepository : KoinComponent {//TODO implement through interface
     }
 
     fun getCachedMovieList() = ""
+
+    fun insertMovie(movie: Movie): Completable{
+        return movieDao.insert(movie)
+    }
+
+    fun deleteMovie(movie: Movie): Completable{
+        return movieDao.delete(movie)
+    }
 }

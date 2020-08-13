@@ -1,9 +1,7 @@
 package com.example.movieshowstracker.presentation.movies
 
-import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.*
-import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MoviesFragment : BaseFragment() {
+class MoviesFragment : BaseFragment(), MoviesRecyclerViewAdapter.Callbacks {
 
     private val moviesViewModel: MoviesViewModel by viewModel()
 
@@ -66,12 +64,16 @@ class MoviesFragment : BaseFragment() {
     }
 
     private fun loadRecyclerView(movieList: List<Movie>) {
-        moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), movieList.toMutableList())
+        moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), movieList.toMutableList(), this)
         moviesRecyclerView.layoutManager = GridLayoutManager(
             requireContext(),
-            2,//TODO remove hardcode
+            1,//TODO remove hardcode
             GridLayoutManager.VERTICAL,
             false
         )
+    }
+
+    override fun favoriteButtonClicked(isChecked: Boolean, movie: Movie) {
+        moviesViewModel.favoriteButtonClicked(isChecked, movie).observe(viewLifecycleOwner, Observer {})
     }
 }
