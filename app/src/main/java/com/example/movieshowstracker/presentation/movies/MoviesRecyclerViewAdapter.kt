@@ -94,7 +94,7 @@ class MoviesRecyclerViewAdapter(private val context: Context, private var movies
         val favoriteToggleButton: ToggleButton = item.findViewById(R.id.button_favorite)
         val descriptionTextView: TextView = item.findViewById(R.id.movieDescriptionTextView)
         val descriptionLayout: View = item.findViewById(R.id.descriptionLayout)
-    }//TODO move to binding
+    }//TODO use bindings and remove findViewById
 
     interface Callbacks{
         fun favoriteButtonClicked(isChecked: Boolean, movie: Movie)

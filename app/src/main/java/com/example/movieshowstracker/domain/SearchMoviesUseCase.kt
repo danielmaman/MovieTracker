@@ -1,5 +1,6 @@
 package com.example.movieshowstracker.domain
 
+import android.util.Log
 import com.example.movieshowstracker.base.BaseSingleUseCase
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.FavoriteMovie
@@ -15,7 +16,7 @@ class SearchMoviesUseCase(private val moviesRepository: MoviesRepository) :
     BaseSingleUseCase<List<Movie>, SearchMoviesUseCase.Request>(), KoinComponent {
 
     override fun create(request: Request): Single<List<Movie>> {
-        return Single.zip(fetchMovies(request), getFavoriteMovies(), BiFunction { t1, t2 -> map(t1.movieList, t2) })
+        return Single.zip(fetchMovies(request), getFavoriteMovies(), BiFunction { t1, t2 -> map(t1.movieList ?: arrayListOf(), t2?: arrayListOf()) })
     }
 
     private fun map(movies: List<Movie>, favoriteMovies: List<FavoriteMovie>): List<Movie> {
@@ -35,11 +36,15 @@ class SearchMoviesUseCase(private val moviesRepository: MoviesRepository) :
             request.type,
             request.year,
             request.page
-        )
+        ).doOnError {
+            Log.e("","")
+        }
     }
 
     private fun getFavoriteMovies(): Single<List<FavoriteMovie>> {
-        return moviesRepository.getFavoriteMovies()
+        return moviesRepository.getFavoriteMovies().doOnError {
+            Log.e("","")
+        }
     }
 
     data class Request(

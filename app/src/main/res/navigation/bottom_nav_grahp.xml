@@ -2,13 +2,17 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/myHomeFragment"
+    app:startDestination="@id/moviesFragment"
     android:id="@+id/app_navigation">
     <fragment
-        android:id="@+id/myHomeFragment"
+        android:id="@+id/moviesFragment"
         android:name="com.example.movieshowstracker.presentation.movies.MoviesFragment"
-        android:label="fragment_my_home"
-        tools:layout="@layout/fragment_movies">
+        android:label="Search"
+        tools:layout="@layout/fragment_movies"/>
 
-    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.movieshowstracker.presentation.favorites.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites"/>
 </navigation>

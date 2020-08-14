@@ -13,7 +13,7 @@ import com.example.movieshowstracker.data.model.Movie
 import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
+//TODO databinding
 class MoviesFragment : BaseFragment(), MoviesRecyclerViewAdapter.Callbacks {
 
     private val moviesViewModel: MoviesViewModel by viewModel()
@@ -22,7 +22,7 @@ class MoviesFragment : BaseFragment(), MoviesRecyclerViewAdapter.Callbacks {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
-    //TODO databinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
