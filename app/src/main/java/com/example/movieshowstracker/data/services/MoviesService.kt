@@ -20,7 +20,7 @@ interface MoviesService {
     ): Single<Movie>
 
     @GET(".")
-    fun getMoviesByTitle(
+    fun getMovieByTitle(
         @Query("t") title: String,
         @Query("type") type: CinematicType?,
         @Query("y") year: Years?,

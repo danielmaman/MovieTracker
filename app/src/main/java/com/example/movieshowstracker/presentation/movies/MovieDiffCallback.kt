@@ -28,6 +28,7 @@ class MovieDiffCallback(
         oldItemPosition: Int,
         newItemPosition: Int
     ): Boolean {
-        return oldMovies[oldItemPosition].equals(newMovies[newItemPosition])
+        val result = oldMovies[oldItemPosition].equals(newMovies[newItemPosition])
+        return result
     }
 }

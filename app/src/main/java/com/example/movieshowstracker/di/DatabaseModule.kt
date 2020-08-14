@@ -14,4 +14,5 @@ val DatabaseModule = module {
         ).build()
     }
     single { get<AppDatabase>().movieDao() }
+    single { get<AppDatabase>().favoriteDao() }
 }

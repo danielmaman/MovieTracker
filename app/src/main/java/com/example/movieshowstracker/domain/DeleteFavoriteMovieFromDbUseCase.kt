@@ -1,22 +1,18 @@
 package com.example.movieshowstracker.domain
 
 import com.example.movieshowstracker.base.BaseCompletableUseCase
-import com.example.movieshowstracker.base.BaseSingleUseCase
-import com.example.movieshowstracker.data.model.CinematicType
+import com.example.movieshowstracker.data.model.FavoriteMovie
 import com.example.movieshowstracker.data.model.Movie
 import com.example.movieshowstracker.data.repo.MoviesRepository
 import io.reactivex.Completable
-import io.reactivex.Single
-import org.joda.time.Years
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class InsertMovieToDbUseCase : BaseCompletableUseCase<InsertMovieToDbUseCase.Request>(), KoinComponent {
-
-    private val moviesRepository: MoviesRepository by inject()
+class DeleteFavoriteMovieFromDbUseCase(private val moviesRepository: MoviesRepository) : BaseCompletableUseCase<DeleteFavoriteMovieFromDbUseCase.Request>(), KoinComponent {
 
     override fun create(request: Request): Completable {
-        return moviesRepository.insertMovie(request.movie)
+        return Completable.fromAction {
+            moviesRepository.deleteFavoriteMovie(FavoriteMovie(request.movie.imdbID))
+        }
     }
 
     data class Request(

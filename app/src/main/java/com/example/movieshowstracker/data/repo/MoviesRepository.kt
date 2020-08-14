@@ -1,18 +1,17 @@
 package com.example.movieshowstracker.data.repo
 
-import com.example.movieshowstracker.data.model.CinematicType
-import com.example.movieshowstracker.data.model.Movie
-import com.example.movieshowstracker.data.model.MovieList
-import com.example.movieshowstracker.data.model.PlotType
+import com.example.movieshowstracker.data.model.*
+import com.example.movieshowstracker.data.room.dao.FavoriteMovieDao
 import com.example.movieshowstracker.data.room.dao.MovieDao
 import com.example.movieshowstracker.data.services.MoviesService
 import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.joda.time.Years
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class MoviesRepository(private val movieService: MoviesService, private val movieDao: MovieDao) : KoinComponent {//TODO implement through interface
+class MoviesRepository(private val movieService: MoviesService, private val movieDao: MovieDao, private val favoriteMovieDao: FavoriteMovieDao) : KoinComponent {//TODO implement through interface
 
 
     fun fetchMoviesByID(
@@ -24,15 +23,6 @@ class MoviesRepository(private val movieService: MoviesService, private val movi
         return movieService.getMoviesByID(id, type, year, plot)
     }
 
-    fun fetchMoviesByTitle(
-        title: String,
-        type: CinematicType?,
-        year: Years?,
-        plot: PlotType?
-    ): Single<Movie> {
-        return movieService.getMoviesByTitle(title, type, year, plot)
-    }
-
     fun fetchMoviesBySearch(
         searchString: String,
         type: CinematicType?,
@@ -42,13 +32,23 @@ class MoviesRepository(private val movieService: MoviesService, private val movi
         return movieService.getMoviesBySearch(searchString, type, year, page)
     }
 
-    fun getCachedMovieList() = ""
+    fun getMovieByIdFromDb(imdbId: String): Single<Movie> {
+        return movieDao.getMovie(imdbId)
+    }
 
-    fun insertMovie(movie: Movie): Completable{
+    fun insertMovie(movie: Movie) {
         return movieDao.insert(movie)
     }
 
-    fun deleteMovie(movie: Movie): Completable{
-        return movieDao.delete(movie)
+    fun getFavoriteMovies(): Single<List<FavoriteMovie>> {
+        return favoriteMovieDao.getAll()
+    }
+
+    fun insertFavoriteMovie(favoriteMovie: FavoriteMovie){
+        return favoriteMovieDao.insert(favoriteMovie)
+    }
+
+    fun deleteFavoriteMovie(favoriteMovie: FavoriteMovie){
+        return favoriteMovieDao.delete(favoriteMovie)
     }
 }

@@ -2,10 +2,11 @@ package com.example.movieshowstracker.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-//TODO export room and database models to seperate module
+//TODO export and split room, database and ui models to seperate module
 @Entity
 data class Movie(
     @PrimaryKey @SerializedName("imdbID") val imdbID: String,
@@ -32,4 +33,6 @@ data class Movie(
     @SerializedName("Production") val production: String,
     @SerializedName("Website") val website: String,
     @SerializedName("Response") val response: Boolean
-)
+){
+    @Ignore var isFavorite: Boolean = false
+}
