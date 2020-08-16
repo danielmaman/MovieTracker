@@ -25,6 +25,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
     buildTypes {
         release {
@@ -53,7 +54,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0'
 
     //Room
-    def room_version = "2.2.5"
+    def room_version = "2.3.0-alpha02" //TODO change to stable
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

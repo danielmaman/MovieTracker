@@ -5,21 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movieshowstracker.R
 import com.example.movieshowstracker.data.model.Movie
+import com.example.movieshowstracker.databinding.LayoutMovieItemBinding
 
-class MoviesRecyclerViewAdapter(private val context: Context, private var moviesList: MutableList<Movie>, private val callbacks: Callbacks) :
-    RecyclerView.Adapter<MoviesRecyclerViewAdapter.MovieViewHolder>() {
+class MoviesRecyclerViewAdapter(
+    private val context: Context,
+    private var moviesList: MutableList<Movie>,
+    private val callbacks: Callbacks,
+    private val allExpanded: Boolean = false
+) : RecyclerView.Adapter<MoviesRecyclerViewAdapter.MovieViewHolder>() {
+
+    private val inflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        return MovieViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.layout_movie_item, parent, false) //TODO binding
-        )
+        val binding = LayoutMovieItemBinding.inflate(inflater, parent, false)
+        return MovieViewHolder(binding) //TODO binding
     }
 
     fun updateListItems(newList: MutableList<Movie>) {
@@ -45,28 +50,19 @@ class MoviesRecyclerViewAdapter(private val context: Context, private var movies
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie: Movie = moviesList[position]
+        holder.binding.movie = movie
         Glide.with(context).load(movie.poster).into(holder.movieImageView)
-        setTextViews(holder, movie)
         setExpandableLayout(holder, position)
         setToggleButton(holder.favoriteToggleButton, position)
     }
 
-    private fun setTextViews(
-        holder: MovieViewHolder,
-        movie: Movie
-    ) {
-        holder.titleTextView.text = movie.title
-        holder.yearTextView.text = movie.year.toString()
-        holder.ratingTextView.text = movie.imdbRating.toString()
-        holder.descriptionTextView.text = movie.plot
-    }
-
     private fun setExpandableLayout(holder: MovieViewHolder, position: Int) {
+        if (allExpanded) holder.descriptionLayout.visibility = View.VISIBLE
         holder.itemView.setOnClickListener {
             val movie = moviesList[position]
             if (holder.descriptionLayout.visibility == View.VISIBLE) {
                 holder.descriptionLayout.visibility = View.GONE
-            } else {
+            } else if (holder.descriptionLayout.visibility == View.GONE) {
                 callbacks.movieExpanded(movie)
                 holder.descriptionLayout.visibility = View.VISIBLE
             }
@@ -78,25 +74,20 @@ class MoviesRecyclerViewAdapter(private val context: Context, private var movies
         favoriteToggleButton: ToggleButton,
         position: Int
     ) {
-        favoriteToggleButton.isChecked = moviesList[position].isFavorite
         favoriteToggleButton.setOnCheckedChangeListener { buttonView, isChecked ->
             val movie = moviesList[position]
             movie.isFavorite = isChecked
-            callbacks.favoriteButtonClicked(isChecked, movie )
+            callbacks.favoriteButtonClicked(isChecked, movie)
         }
     }
 
-    class MovieViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val movieImageView: ImageView = item.findViewById(R.id.movieCoverImageView)
-        val titleTextView: TextView = item.findViewById(R.id.titleTextView)
-        val ratingTextView: TextView = item.findViewById(R.id.ratingTextView)
-        val yearTextView: TextView = item.findViewById(R.id.yearTextView)
-        val favoriteToggleButton: ToggleButton = item.findViewById(R.id.button_favorite)
-        val descriptionTextView: TextView = item.findViewById(R.id.movieDescriptionTextView)
-        val descriptionLayout: View = item.findViewById(R.id.descriptionLayout)
+    class MovieViewHolder(val binding: LayoutMovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val movieImageView: ImageView = binding.movieCoverImageView
+        val favoriteToggleButton: ToggleButton = binding.buttonFavorite
+        val descriptionLayout: View = binding.descriptionLayout
     }//TODO use bindings and remove findViewById
 
-    interface Callbacks{
+    interface Callbacks {
         fun favoriteButtonClicked(isChecked: Boolean, movie: Movie)
         fun movieExpanded(movie: Movie)
     }

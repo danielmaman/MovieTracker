@@ -15,6 +15,9 @@ interface MovieDao {
     @Query("SELECT * FROM movie where imdbID = :imdbId LIMIT 1")
     fun getMovie(imdbId: String): Single<Movie>
 
+    @Query("SELECT * FROM movie WHERE imdbID IN (:ids)")
+    fun getMoviesByIds(ids: List<String>): Single<List<Movie>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(movies: List<Movie>)
 

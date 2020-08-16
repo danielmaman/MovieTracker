@@ -32,6 +32,10 @@ class MoviesRepository(private val movieService: MoviesService, private val movi
         return movieService.getMoviesBySearch(searchString, type, year, page)
     }
 
+    fun getMoviesByIdsFromDb(ids: List<String>): Single<List<Movie>> {
+        return movieDao.getMoviesByIds(ids)
+    }
+
     fun getMovieByIdFromDb(imdbId: String): Single<Movie> {
         return movieDao.getMovie(imdbId)
     }

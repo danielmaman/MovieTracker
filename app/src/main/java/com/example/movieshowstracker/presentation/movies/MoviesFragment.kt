@@ -3,18 +3,19 @@ package com.example.movieshowstracker.presentation.movies
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.movieshowstracker.R
-import com.example.movieshowstracker.base.BaseFragment
 import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
 import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 //TODO databinding
-class MoviesFragment : BaseFragment(), MoviesRecyclerViewAdapter.Callbacks {
+//TODO implement paging
+class MoviesFragment : Fragment(), MoviesRecyclerViewAdapter.Callbacks {
 
     private val moviesViewModel: MoviesViewModel by viewModel()
 
@@ -69,7 +70,7 @@ class MoviesFragment : BaseFragment(), MoviesRecyclerViewAdapter.Callbacks {
         moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), movieList.toMutableList(), this)
         moviesRecyclerView.layoutManager = GridLayoutManager(
             requireContext(),
-            1,//TODO remove hardcode
+            1,
             GridLayoutManager.VERTICAL,
             false
         )
