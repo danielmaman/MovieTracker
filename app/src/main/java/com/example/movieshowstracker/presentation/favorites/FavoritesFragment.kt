@@ -15,12 +15,12 @@ import com.example.movieshowstracker.presentation.movies.MoviesRecyclerViewAdapt
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+//TODO Save instance state for orientation changes
+//TODO bindings
 class FavoritesFragment : Fragment(), MoviesRecyclerViewAdapter.Callbacks {
 
     private val favoritesViewModel: FavoritesViewModel by viewModel()
 
-    //TODO bindings
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

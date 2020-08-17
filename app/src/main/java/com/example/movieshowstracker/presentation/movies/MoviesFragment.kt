@@ -13,8 +13,9 @@ import com.example.movieshowstracker.data.model.Movie
 import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//TODO databinding
+//TODO binding
 //TODO implement paging
+//TODO Save instance state for orientation changes
 class MoviesFragment : Fragment(), MoviesRecyclerViewAdapter.Callbacks {
 
     private val moviesViewModel: MoviesViewModel by viewModel()

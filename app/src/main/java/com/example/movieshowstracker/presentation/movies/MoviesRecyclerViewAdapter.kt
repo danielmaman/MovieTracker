@@ -24,7 +24,7 @@ class MoviesRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = LayoutMovieItemBinding.inflate(inflater, parent, false)
-        return MovieViewHolder(binding) //TODO binding
+        return MovieViewHolder(binding)
     }
 
     fun updateListItems(newList: MutableList<Movie>) {
@@ -85,7 +85,7 @@ class MoviesRecyclerViewAdapter(
         val movieImageView: ImageView = binding.movieCoverImageView
         val favoriteToggleButton: ToggleButton = binding.buttonFavorite
         val descriptionLayout: View = binding.descriptionLayout
-    }//TODO use bindings and remove findViewById
+    }
 
     interface Callbacks {
         fun favoriteButtonClicked(isChecked: Boolean, movie: Movie)
