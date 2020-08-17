@@ -1,64 +1,89 @@
 package com.example.movieshowstracker.presentation.movies
 
 import android.os.Bundle
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.movieshowstracker.R
-import com.example.movieshowstracker.base.LiveDataWrapper
+import com.example.movieshowstracker.data.model.CinematicType
 import com.example.movieshowstracker.data.model.Movie
-import com.example.movieshowstracker.data.model.MovieList
 import kotlinx.android.synthetic.main.fragment_movies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MoviesFragment : Fragment() {
+//TODO binding
+//TODO implement paging
+//TODO Save instance state for orientation changes
+class MoviesFragment : Fragment(), MoviesRecyclerViewAdapter.Callbacks {
 
-    val moviesViewModel : MoviesViewModel by viewModel()
-//TODO databinding
+    private val moviesViewModel: MoviesViewModel by viewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_movies, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        moviesViewModel.loadMovieList()
-        moviesViewModel.movieListResponse.observe(viewLifecycleOwner, mDataObserver)
+        fetchMovieList()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.search_bar_menu, menu)
+        setSearchView(menu)
+    }
 
-    private val mDataObserver = Observer<LiveDataWrapper<MovieList>> { result ->
-        when (result?.responseRESPONSESTATUS) {
-            LiveDataWrapper.RESPONSESTATUS.LOADING -> {
-                // Loading data
+    private fun setSearchView(menu: Menu) {
+        val searchView = menu.findItem(R.id.searchView).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
             }
-            LiveDataWrapper.RESPONSESTATUS.ERROR -> {
-//                // Error for http request
-//                logD(TAG,"LiveDataResult.Status.ERROR = ${result.response}")
-//                error_holder.visibility = View.VISIBLE
-//                /showToast("Error in getting data")
-//                testTextView.text = "Error in getting data"
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (!newText.isNullOrEmpty()) {
+                    fetchMovieList(newText)
+                }
+                return true
             }
-            LiveDataWrapper.RESPONSESTATUS.SUCCESS -> {
-                moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), result.response?.movieList?.toMutableList() ?: mutableListOf())
-                moviesRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-//                testTextView.text = result.response?.title
-//                // Data from API
-//                logD(TAG,"LiveDataResult.Status.SUCCESS = ${result.response}")
-//                val mainItemReceived = result.response as AllPeople
-//                val  listItems =  mainItemReceived.results as ArrayList<AllPeopleResult>
-//                processData(listItems)
-            }
-        }
+        })
+    }
+
+    private fun fetchMovieList(searchString: String = "batman") {//TODO remove hardcoded default parameter with properly working api method
+        moviesViewModel.fetchMovieList(searchString, CinematicType.MOVIE)
+            .observe(viewLifecycleOwner, Observer {
+                loadRecyclerView(it)
+            })
+    }
+
+    private fun loadRecyclerView(movieList: List<Movie>) {
+        (moviesRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        moviesRecyclerView.adapter = MoviesRecyclerViewAdapter(requireContext(), movieList.toMutableList(), this)
+        moviesRecyclerView.layoutManager = GridLayoutManager(
+            requireContext(),
+            1,
+            GridLayoutManager.VERTICAL,
+            false
+        )
+    }
+
+    override fun movieExpanded(movie: Movie) {
+        moviesViewModel.movieFieldExpanded(movie).observe(viewLifecycleOwner, Observer {
+            (moviesRecyclerView.adapter as MoviesRecyclerViewAdapter).updateListItem(it)
+        })
+    }
+
+    override fun favoriteButtonClicked(isChecked: Boolean, movie: Movie) {
+        moviesViewModel.favoriteButtonClicked(isChecked, movie).observe(viewLifecycleOwner, Observer {})
     }
 }

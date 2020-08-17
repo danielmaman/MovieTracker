@@ -5,5 +5,5 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val RepositoryModule : Module = module {
-    factory { MoviesRepository() }
+    factory { MoviesRepository(movieService = get(), movieDao = get(), favoriteMovieDao = get()) }
 }

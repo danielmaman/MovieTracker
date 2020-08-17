@@ -1,64 +1,58 @@
 package com.example.movieshowstracker.data.repo
 
-import com.example.movieshowstracker.data.model.CinematicType
-import com.example.movieshowstracker.data.model.Movie
-import com.example.movieshowstracker.data.model.MovieList
-import com.example.movieshowstracker.data.model.PlotType
+import com.example.movieshowstracker.data.model.*
+import com.example.movieshowstracker.data.room.dao.FavoriteMovieDao
+import com.example.movieshowstracker.data.room.dao.MovieDao
 import com.example.movieshowstracker.data.services.MoviesService
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import org.joda.time.Years
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class MoviesRepository : KoinComponent {
+class MoviesRepository(private val movieService: MoviesService, private val movieDao: MovieDao, private val favoriteMovieDao: FavoriteMovieDao) : KoinComponent {//TODO implement through interface
 
-    val movieService: MoviesService by inject()
 
-    suspend fun getMoviesByID(
+    fun fetchMoviesByID(
         id: String,
         type: CinematicType?,
         year: Years?,
         plot: PlotType?
-    ): Movie {
+    ): Single<Movie> {
         return movieService.getMoviesByID(id, type, year, plot)
     }
 
-    suspend fun getMoviesByTitle(
-        title: String,
-        type: CinematicType?,
-        year: Years?,
-        plot: PlotType?
-    ): Movie {
-        return movieService.getMoviesByTitle(title, type, year, plot)
-    }
-
-    suspend fun getMoviesBySearch(
+    fun fetchMoviesBySearch(
         searchString: String,
         type: CinematicType?,
         year: Years?,
         page: Int?
-    ): MovieList {
+    ): Single<MovieList> {
         return movieService.getMoviesBySearch(searchString, type, year, page)
     }
 
-//    suspend fun getLoginData(query: String): AllPeople {
-//
-//        return processDataFetchLogic(query)
-//
-//    }
-//
-//    suspend fun processDataFetchLogic(parameter:String): AllPeople{
-//
-//        for (x in 0 until 3){
-//            println(" Data manipulation prior to REST API request if required $x")
-//        }
-//
-//        val dataReceived = mLoginAPIService.getLoginData(parameter)
-//
-//        for (x in 0 until 3){
-//            println(" Data manipulation post REST API request if required $x")
-//        }
-//
-//        return dataReceived
-//    }
+    fun getMoviesByIdsFromDb(ids: List<String>): Single<List<Movie>> {
+        return movieDao.getMoviesByIds(ids)
+    }
 
+    fun getMovieByIdFromDb(imdbId: String): Single<Movie> {
+        return movieDao.getMovie(imdbId)
+    }
+
+    fun insertMovie(movie: Movie) {
+        return movieDao.insert(movie)
+    }
+
+    fun getFavoriteMovies(): Single<List<FavoriteMovie>> {
+        return favoriteMovieDao.getAll()
+    }
+
+    fun insertFavoriteMovie(favoriteMovie: FavoriteMovie){
+        return favoriteMovieDao.insert(favoriteMovie)
+    }
+
+    fun deleteFavoriteMovie(favoriteMovie: FavoriteMovie){
+        return favoriteMovieDao.delete(favoriteMovie)
+    }
 }
